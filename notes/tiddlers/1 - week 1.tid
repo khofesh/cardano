@@ -1,0 +1,171 @@
+created: 20210703160923938
+modified: 20210724071842120
+tags: [[plutus pioneer program]]
+title: 1 - week 1
+type: text/vnd.tiddlywiki
+
+!! ''Tasks:'' 
+
+* Clone the The Plutus repository, check out the correct commit as specified in cabal.project.
+* Set-up IOHK binary caches How to set up the IOHK binary caches. "If you do not do this, you will end up building GHC, which takes several hours. If you find yourself building GHC, STOP and fix the cache."
+* Enter a nix-shell.
+* Build the English Auction contract with cabal build (you may need to run cabal update first).
+* Go to the plutus-playground-client folder.
+* Start the Playground server with plutus-playground-server.
+* Start the Playground client (in another nix-shell) with npm run start.
+* Copy-paste the auction contract into the Playground editor.
+* Compile.
+* Simulate various auction scenarios.
+
+!! ''Solution:''
+
+change dir to cardano
+
+```
+cd /media/xfsfast/cardano
+```
+
+clone repos
+
+```
+git clone https://github.com/input-output-hk/plutus-pioneer-program.git
+
+git clone https://github.com/input-output-hk/plutus.git
+
+```
+Install nix
+
+https://nixos.org/guides/install-nix.html
+
+```
+sh <(curl -L https://nixos.org/nix/install) --no-daemon
+```
+
+Nix config
+
+```
+mkdir ~/.config/nix
+vim ~/.config/nix/nix.conf
+```
+Input the following:
+
+```
+substituters        = https://hydra.iohk.io https://iohk.cachix.org https://cache.nixos.org/
+
+trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= iohk.cachix.org-1:DpRUyj7h7V830dp/i6Nti+NEO2/nhblbov/8MW7Rqoo= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
+```
+
+build 
+
+```
+cd plutus
+
+nix build -f default.nix docs.papers.eutxo
+```
+
+compile English Auction contract
+
+```
+cd ..
+
+cd plutus-pioneer-program/code/week01/
+```
+
+check the tag inside the cabal.project
+
+```
+source-repository-package
+  type: git
+  location: https://github.com/input-output-hk/plutus.git
+  subdir:
+    freer-extras
+    playground-common
+    plutus-chain-index
+    plutus-core
+    plutus-contract
+    plutus-ledger
+    plutus-ledger-api
+    plutus-tx
+    plutus-tx-plugin
+    prettyprinter-configurable
+    quickcheck-dynamic
+    word-array
+  tag: ea0ca4e9f9821a9dbfc5255fa0f42b6f2b3887c4
+```
+
+```
+cd /media/xfsfast/cardano/plutus
+
+git checkout ea0ca4e9f9821a9dbfc5255fa0f42b6f2b3887c4
+
+nix-shell
+
+cd ../plutus-pioneer-program/code/week01/
+
+cabal build
+```
+
+if there's an error, try update the packages
+
+```
+cabal update
+
+cabal build
+```
+
+
+shell 1 (n plutus directory)
+
+
+```
+git checkout master
+
+nix-shell
+
+cd plutus-playground-client/
+
+plutus-playground-server
+```
+
+shell 2 (in plutus directory)
+
+```
+git checkout master
+
+nix-shell
+
+cd plutus-playground-client/
+
+npm start
+```
+
+[img[Screenshot_2021-07-04_09-57-45.png]]
+
+copy https://github.com/input-output-hk/plutus-pioneer-program/blob/main/code/week01/src/Week01/EnglishAuction.hs then paste 
+to the editor and hit compile.
+
+if it's successfully compiled, hit "Simulate" button.
+[img[Screenshot_2021-07-04_10-01-50.png]]
+
+slot to POSIX time
+
+```
+[nix-shell:/media/xfsfast/cardano/plutus-pioneer-program/code/week01]$  cabal repl
+Build profile: -w ghc-8.10.4.20210212 -O1
+In order, the following will be built (use -v for more details):
+ - plutus-pioneer-program-week01-0.1.0.0 (lib) (ephemeral targets)
+Preprocessing library for plutus-pioneer-program-week01-0.1.0.0..
+GHCi, version 8.10.4.20210212: https://www.haskell.org/ghc/  :? for help
+[1 of 1] Compiling Week01.EnglishAuction ( src/Week01/EnglishAuction.hs, /media/xfsfast/cardano/plutus-pioneer-program/code/week01/dist-newstyle/build/x86_64-linux/ghc-8.10.4.20210212/plutus-pioneer-program-week01-0.1.0.0/build/Week01/EnglishAuction.o )
+Ok, one module loaded.
+Prelude Week01.EnglishAuction> import Ledger.TimeSlot
+Prelude Ledger.TimeSlot Week01.EnglishAuction> slotToPOSIXTime 10
+POSIXTime {getPOSIXTime = 1596059101}
+
+```
+
+!! ''links:''
+
+# https://www.reddit.com/r/CardanoDevelopers/comments/mno89m/plutus_community_playground/
+# https://docs.plutus-community.com/
+# https://www.youtube.com/watch?v=Cdu0gzCiYbY
