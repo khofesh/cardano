@@ -1,0 +1,12 @@
+-- Type inferece
+--
+-- f :: ?
+-- f = <expr>
+--
+-- 1. assign every variable a unique type variable
+-- 2. assign every function its type with new unique type variables
+-- 3. for each subexpression of the expression generate equations of types.
+-- 4. resolve the equations until no further simplifications can be done. 
+--    conflicting types imply a type error otherwise the type has been inferred!
+--
+--
