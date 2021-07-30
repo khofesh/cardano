@@ -1,0 +1,58 @@
+-- Monads
+--
+--
+-- >>= (bind)
+--
+-- (>>=) :: Monad m => m a -> (a -> m b) -> m b
+--
+-- Just 1 >> = (\x -> Just x)
+--   ==> Just 1
+--
+-- Nothing >>= (\x -> Just x)
+--   ==> Nothing
+--
+--
+-- -- example
+--
+-- maybeAdd :: Num b => Maybe b -> b -> Maybe b
+-- maybeAdd mx y = mx >>= (\x -> Just $ x+y)
+--
+-- maybeAdd Nothing 1
+--   ==> Nothing
+--
+-- maybeAdd (Just 1) 1
+--   ==> Just 2
+--
+-- 
+-- maybeAdd :: Num b => Maybe b -> Maybe b -> Maybe b
+-- maybeAdd mx my = 
+--   mx >>= (\x -> my >>= (\y -> Just $ x+y))
+--
+--
+-- monadd :: (Monad m, Num b) => m b -> m b -> m b
+-- monadd mx my = 
+--   mx >>= (\x -> my >>= (\y -> return $ x+y))
+--
+monadd mx my = do
+  x <- mx
+  y <- my
+  return $ x + y
+-- monadd (Just 1) (Just 1)
+--
+--
+-- >>
+--
+--
+-- (>>) :: Monad m => m a -> m b -> m b
+--
+--
+-- Monad Laws
+--
+-- 1. left identity
+-- return a >>= k = k a
+--
+-- 2. right identity
+-- m >>= return = m
+--
+-- 3. associativity
+-- m >>= (\x -> k x >>= h) = (m >>= h) >>= h

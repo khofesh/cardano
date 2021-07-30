@@ -10,3 +10,49 @@
 --    conflicting types imply a type error otherwise the type has been inferred!
 --
 --
+-- add x y z = (x + y) : z
+--
+-- step 1
+-- x :: a
+-- y :: b
+-- z :: c
+--
+-- step 2
+-- (+) :: (Num d) => d -> d -> d
+-- (:) :: e -> [e] -[e]
+--
+-- step 3
+-- from (x + y) derive a = d and b = d
+-- from (x + y) : z derive [e] = c and d = e
+--
+-- step 4
+-- x :: d
+-- y :: d
+-- z :: [e]
+-- z :: [d]
+--
+-- add :: (Num d) => d -> d -> [d] -> [d]
+--
+--
+-- f = reverse . sort
+--
+-- 1.
+-- reverse :: [a] -> [a]
+-- (.) :: (c -> d) -> (b -> c) -> b -> d
+-- sort :: Ord e => [e] -> [e]
+--
+-- 2. 
+-- from reverse . sort derive
+--   b = [e], c = [e], c = [a], d = [a], a = e
+-- ==> f :: Ord a => [a] -> [a]
+--
+--
+-- f x = x : x
+--
+-- 1. 
+-- x :: a
+--
+-- 2. 
+-- (:) :: b -> [b] -> [b]
+--
+-- 3. from (x:x) derive a = b and a = [b]
